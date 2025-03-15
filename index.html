@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Glowing Skin Blog</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-analytics.js"></script>
+
+    <script>
+      // Firebase Configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAlVjnhwNEOdWSQD3DZP3ANgWwoFIp1fDA",
+        authDomain: "momoshares307.firebaseapp.com",
+        databaseURL: "https://momoshares307-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "momoshares307",
+        storageBucket: "momoshares307.firebasestorage.app",
+        messagingSenderId: "60275749874",
+        appId: "1:60275749874:web:6bd3b601b01f0f7489f16b",
+        measurementId: "G-PD07VELJ3M"
+      };
+
+      // Initialize Firebase
+      const app = firebase.initializeApp(firebaseConfig);
+      const analytics = firebase.analytics();
+      const database = firebase.database();
+    </script>
+
+    <style>
+        /* 🌸 Soft Background for Glowing Skin Blog */
+        body {
+            background: url('./woman blog.jpg') no-repeat center center/cover;            font-family: 'Poppins', sans-serif;
+            color: #4a4a4a;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        /* 📌 Blog Container */
+        .blog-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ✨ Elegant Blog Title */
+        h1 {
+            font-size: 28px;
+            color: #ff758c;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        /* 💖 Stylish Input Fields */
+        input, textarea {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ff9a8b;
+            border-radius: 10px;
+            outline: none;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #ff758c;
+            box-shadow: 0px 0px 8px rgba(255, 117, 140, 0.5);
+        }
+
+        /* 💅 Glowing Submit Button */
+        button {
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 4px 10px rgba(255, 117, 140, 0.5);
+        }
+
+        /* 📝 Blog Post Styles */
+        .blog-post {
+            background: #fff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .blog-post h2 {
+            color: #ff758c;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="blog-container">
+        <h1>Glowing Skin Blog</h1>
+
+        <h2><a href="https://Momoshares307.com/secrets-to-healthy-glowing-skin" target="_blank">Secrets to Healthy, Glowing Skin</a></h2>
+
+        <!-- 📌 Step 3: Add a Form for User Input -->
+        <h3>Add a Blog Post</h3>
+        <input type="text" id="blogTitle" placeholder="Enter blog title">
+        <br><br>
+        <textarea id="blogContent" placeholder="Write your post..." rows="4" cols="40"></textarea>
+        <br><br>
+        <button onclick="writeToDatabase()">Save Blog Post</button>
+
+        <div id="blogPosts"></div> <!-- Display saved posts here -->
+    </div>
+
+    <script>
+        function writeToDatabase() {
+            const title = document.getElementById("blogTitle").value;
+            const content = document.getElementById("blogContent").value;
+
+            if (title.trim() === "" || content.trim() === "") {
+                alert("Please enter both title and content!");
+                return;
+            }
+
+            database.ref("blogPosts").push({
+                title: title,
+                content: content,
+                timestamp: new Date().toISOString()
+            }).then(() => {
+                alert("Blog post saved successfully!");
+                document.getElementById("blogTitle").value = "";
+                document.getElementById("blogContent").value = "";
+                displayBlogPosts();
+            }).catch((error) => {
+                alert("Failed to save blog post: " + error);
+            });
+        }
+
+        function displayBlogPosts() {
+            const blogPostsContainer = document.getElementById("blogPosts");
+            blogPostsContainer.innerHTML = "";
+
+            database.ref("blogPosts").once("value", (snapshot) => {
+                snapshot.forEach((childSnapshot) => {
+                    const post = childSnapshot.val();
+                    const postElement = document.createElement("div");
+                    postElement.classList.add("blog-post");
+                    postElement.innerHTML = `<h2>${post.title}</h2><p>${post.content}</p>`;
+                    blogPostsContainer.appendChild(postElement);
+                });
+            });
+        }
+
+        window.onload = displayBlogPosts;
+    </script>
+</body>
+</html>
